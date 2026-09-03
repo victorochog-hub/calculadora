@@ -53,7 +53,7 @@ table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}th,td{b
           <div class="metric"><div class="name">toneladas totales</div><div class="num" id="tonTotal">0</div></div>
           <div class="metric"><div class="name">volumen por palada · 90%</div><div class="num" id="volPala">0</div></div>
         </div>
-        <div class="notice"><strong>Uso:</strong> seleccione la pala, indique el número de paladas y el programa calculará automáticamente el peso estimado considerando un nivel de llenado fijo del <strong>90%</strong>.</div>
+        <div class="notice"><strong>Uso:</strong> seleccione la pala e indique el número de paladas. El peso por palada usa la <strong>calibración corregida (90% + relieve superior equivalente)</strong>; para la Pala 4, 48 paladas corresponden a <strong>30 t</strong>.</div>
       </div>
     </div>
   </section>
@@ -63,10 +63,10 @@ table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}th,td{b
 <script>
 const LLENADO=0.90;
 const palas=[
- {id:1,ancho:184,prof:72,alto:56,vol:0.400752,kg:536.206176},
- {id:2,ancho:99,prof:103,alto:77.5,vol:0.4705965,kg:629.658117},
- {id:3,ancho:184,prof:74,alto:56,vol:0.4241568,kg:567.5217984},
- {id:4,ancho:195,prof:74,alto:56,vol:0.426465,kg:570.61017}
+ {id:1,ancho:184,prof:72,alto:56,vol:0.400752,vol90:0.3606768,kg90:482.5855584,volCorregido:0.43715034949236925,kgCorregido:584.90716762079},
+ {id:2,ancho:99,prof:103,alto:77.5,vol:0.4705965,vol90:0.42353685,kg90:566.6923053,volCorregido:0.4823986241676999,kgCorregido:645.4493591363824},
+ {id:3,ancho:184,prof:74,alto:56,vol:0.4241568,vol90:0.38174112,kg90:510.76961856,volCorregido:0.46033893475604615,kgCorregido:615.9334947035898},
+ {id:4,ancho:195,prof:74,alto:56,vol:0.426465,vol90:0.3838185,kg90:513.549153,volCorregido:0.4671150971599402,kgCorregido:625}
 ];
 let selected=0;
 function svgPala(p){
@@ -94,12 +94,12 @@ function update(){
  updateInfo();
  const p=palas[selected];
  const n=Math.max(0,parseInt(document.getElementById('paladas').value||0,10));
- const kg=p.kg*LLENADO;
+ const kg=p.kgCorregido;
  const total=kg*n;
  document.getElementById('kgPala').textContent=fmt(kg,1)+' kg';
  document.getElementById('kgTotal').textContent=fmt(total,1)+' kg';
  document.getElementById('tonTotal').textContent=fmt(total/1000,3)+' t';
- document.getElementById('volPala').textContent=fmt(p.vol*LLENADO,3)+' m³';
+ document.getElementById('volPala').textContent=fmt(p.volCorregido,3)+' m³';
 }
 document.getElementById('paladas').addEventListener('input',update);
 document.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('paladas').value=b.dataset.q;update();}));
